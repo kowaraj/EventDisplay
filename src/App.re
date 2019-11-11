@@ -13,12 +13,12 @@ let make = () => {
     <Nav />
 
     {switch (url.path) {
-     | [] => <Home />
+     | ["home"] => <Home />
      | ["second"] => <Second /> //<iframe src="https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer/content.txt" width="200" height="400"></iframe>
      | ["third"] => <Third /> //<img src="https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer/ss_1573150824.png" width="400" height="200"/>
      | ["ed"] => <EventDisplay /> //<img src="https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer/ss_1573150824.png" width="400" height="200"/>
-     | ["test-apashnin-ams", "buffer", "ss_1.png"] => <img src="https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer/ss_1573150824.png" width="500" height="300"/>
-     | _ => <Home />
+     | _ => {Js.log("hi"); <img src="https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer/ss_1573150824.png" width="500" height="300"/>}
+//     | _ => Js.log("home??? by default"); <Home />
      }}
   </div>;
 };
