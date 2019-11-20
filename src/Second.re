@@ -24,7 +24,7 @@ let make = () =>
     let doFetch = () => {
         Js.log("fetching");
         Js.Promise.(
-            Fetch.fetch("https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer/content.txt") 
+            Fetch.fetch("https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer_copied/ss_list.json") 
 //            Fetch.fetch("http://localhost:3002/content.txt", 
 //            Fetch.fetchWithInit("http://localhost:3001/content.txt", 
 //            Fetch.fetchWithInit("https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer/content.txt", 
