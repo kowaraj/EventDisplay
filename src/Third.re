@@ -41,23 +41,42 @@ let make = () => {
     let handleClick2 = (_e) => {
         Js.log("clicked");
         setSSIndex(ssindex + 1);
-    }
+    };
+
     switch sslist {
         | Some(fetched_ss_list : Decode.ss) => 
         {
+
+
+            // display
             let ss_first = List.nth(fetched_ss_list.fns, ssindex);
             let ss_path = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer_copied/";
             <div onClick={handleClick2}> 
             {
                 Js.log("nth ("++string_of_int(ssindex) ++ ") element is: " ++ ss_path ++ ss_first);
-                <img src=(ss_path ++ ss_first) width="200" height="100"/>                
+                <img src=(ss_path ++ ss_first) width="200" height="100"/>
             }
             <br/>
             {
                 Js.log("nth ("++string_of_int(ssindex) ++ ") element is: " ++ ss_path ++ ss_first);
                 <img src=(ss_path ++ ss_first) width="100%"/>                
+
+                // pre-load images
+                Js.log(fetched_ss_list.fns);
+                <div> 
+                (
+                    List.map( 
+                        ss_i => {<p> { Js.log(ss_i); str(ss_i) } </p>}, 
+                        fetched_ss_list.fns
+                    )
+                    |> Array.of_list
+                    |> React.array
+                )
+                </div>
+
             }
             </div>;
+
         }
         | None => 
         {
