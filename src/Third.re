@@ -79,8 +79,6 @@ let make = () => {
         }
     };
 
-
-
     let handleClick2 = (_e) => {
         Js.log("clicked");
         setSSIndex(ssindex + 1);
@@ -88,12 +86,17 @@ let make = () => {
     switch sslist {
         | Some(fetched_ss_list : Decode.ss) => 
         {
+            let ss_first = List.nth(fetched_ss_list.fns, ssindex);
+            let ss_path = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer_copied/";
             <div onClick={handleClick2}> 
             {
-                let ss_first = List.nth(fetched_ss_list.fns, ssindex);
-                let ss_path = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer_copied/";
-                Js.log("nth ("++string_of_int(ssindex) ++ ") elelemnt is: " ++ ss_path ++ ss_first);
-                <img src=(ss_path ++ ss_first) width="400" height="200"/>;
+                Js.log("nth ("++string_of_int(ssindex) ++ ") element is: " ++ ss_path ++ ss_first);
+                <img src=(ss_path ++ ss_first) width="200" height="100"/>                
+            }
+            <br/>
+            {
+                Js.log("nth ("++string_of_int(ssindex) ++ ") element is: " ++ ss_path ++ ss_first);
+                <img src=(ss_path ++ ss_first) width="100%"/>                
             }
             </div>;
         }
