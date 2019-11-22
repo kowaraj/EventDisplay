@@ -4,10 +4,6 @@ let msg = "hi";
 
 [@react.component]
 let make = () => {
-    let (data, setData) = React.useReducer(
-        (_oldState, actionIsNewState) => actionIsNewState,  //state after action
-        None // initial state
-    );
     let (sslist, setSSList) = React.useReducer(
         (_oldState, actionIsNewState) => actionIsNewState,  //state after action
         None // initial state
@@ -17,18 +13,8 @@ let make = () => {
         0
     );
 
-
-    let doFetch = () => {
-        Js.log("fetching from third");
-        Js.Promise.(
-            Fetch.fetch("https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer_copied/ss_list.json") 
-            |> then_(Fetch.Response.text)
-            |> then_(text => ({Js.log(text); Some(text)} |> resolve))
-        );
-    };
-
     let doFetchJSON = () => {
-        Js.log("fetching from third");
+        Js.log("fetching list of screenshots in json");
         Js.Promise.(
             Fetch.fetch("https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer_copied/ss_list.json") 
             |> then_(Fetch.Response.json)
@@ -40,13 +26,6 @@ let make = () => {
         );
     };
 
-    let callDoFetch = () => {
-        doFetch()
-        |> Js.Promise.then_( result => { Js.log(result); setData(result); Js.Promise.resolve(); 
-        } )
-        |> ignore
-    };
-
     let callDoFetchJSON = () => {
         doFetchJSON()
         |> Js.Promise.then_( result => { Js.log("doFetchJSON results are: "); Js.log(result); setSSList(result); Js.Promise.resolve(); 
@@ -55,29 +34,9 @@ let make = () => {
     };
 
      React.useEffect0( () => {
-        callDoFetch();        
-        None // no destroying
-    });
-
-     React.useEffect0( () => {
         callDoFetchJSON();        
         None // no destroying
     });
-
-    switch data {
-        | Some(fetched_data) => 
-        {
-            <div onClick={handleClick}> 
-                {str(fetched_data)}
-            </div>;
-        }
-        | None => 
-        {
-            <div onClick={handleClick}> 
-                {str("failed to fetch")}
-            </div>;
-        }
-    };
 
     let handleClick2 = (_e) => {
         Js.log("clicked");
@@ -108,6 +67,4 @@ let make = () => {
             </div>;
         }
     }
-
 }
-// <h1> {ReasonReact.string("Third page")} </h1>;
