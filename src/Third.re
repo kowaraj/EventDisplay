@@ -51,6 +51,17 @@ let make = () => {
             // display
             let ss_first = List.nth(fetched_ss_list.fns, ssindex);
             let ss_path = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer_copied/";
+
+            let preload_ss = [%raw {|
+                function(a) {
+                    console.log("hello from raw JavaScript!");
+                    const img = new Image();
+                    img.src = a;
+                    return
+                }
+                |}];
+
+
             <div onClick={handleClick2}> 
             {
                 Js.log("nth ("++string_of_int(ssindex) ++ ") element is: " ++ ss_path ++ ss_first);
@@ -66,7 +77,11 @@ let make = () => {
                 <div> 
                 (
                     List.map( 
-                        ss_i => {<p> { Js.log(ss_i); str(ss_i) } </p>}, 
+                        ss_i => {
+                            Js.log(ss_i); 
+                            preload_ss();
+                            <p key=ss_i> {str(ss_i)} </p> 
+                        }, 
                         fetched_ss_list.fns
                     )
                     |> Array.of_list
