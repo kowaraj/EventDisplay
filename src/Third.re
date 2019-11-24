@@ -9,7 +9,7 @@ let make = () => {
         None // initial state
     );
     let (ssindex, setSSIndex) = React.useReducer(
-        (s, a) => a,
+        (_s, a) => a,
         0
     );
 
@@ -33,65 +33,134 @@ let make = () => {
         |> ignore
     };
 
-     React.useEffect0( () => {
+    React.useEffect0( () => {
         callDoFetchJSON();        
         None // no destroying
     });
 
-    let handleClick2 = (_e) => {
-        Js.log("clicked");
-        setSSIndex(ssindex + 1);
+    React.useEffect1( () => {
+        switch sslist {
+        | Some(fetched_ss_list : Decode.ss) => 
+        {
+            // preloading...
+            let ss_path = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer_copied/";
+            let preload_ss = [%raw {|
+                function(a) {
+                    console.log("preloading: " + a);
+                    const img = new Image();
+                    img.src = a;
+                    return;
+                }
+                |}];
+
+            List.map( 
+                ss_i => {
+                    // Js.log(ss_i); 
+                    preload_ss(ss_path ++ ss_i);
+                    <p key=ss_i> {str(ss_i)} </p> 
+                }, 
+                fetched_ss_list.fns
+            )
+            |> Array.of_list
+            |> React.array
+            |> ignore;
+            
+            None;
+        }
+        | None => None;
+        }
+    }, 
+    [|sslist|]);
+
+    let fetchSS = (_e) => {
+        Js.log("fetch SS");
+        callDoFetchJSON();
     };
+    let nextSS = (_e) => {
+        Js.log("next SS");
+        setSSIndex( (ssindex + 1) mod 60);
+    };
+    let prevSS = (_e) => {
+        Js.log("prev SS");
+        setSSIndex( (ssindex > 0) ? (ssindex - 1) : ssindex) ;
+    };
+
+
 
     switch sslist {
         | Some(fetched_ss_list : Decode.ss) => 
         {
-
-
             // display
             let ss_first = List.nth(fetched_ss_list.fns, ssindex);
             let ss_path = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer_copied/";
 
-            let preload_ss = [%raw {|
-                function(a) {
-                    console.log("hello from raw JavaScript!");
-                    const img = new Image();
-                    img.src = a;
-                    return
-                }
-                |}];
+            // let preload_ss = [%raw {|
+            //     function(a) {
+            //         console.log("preloading: " + a);
+            //         const img = new Image();
+            //         img.src = a;
+            //         return;
+            //     }
+            //     |}];
+
+//            <div onClick={handleClick2}> 
+
+            // {
+            //     <div>
+            //     {
+            //         Js.log("asdf")        
+            //         List.map( 
+            //             ss_i => {
+            //                 // Js.log(ss_i); 
+            //                 preload_ss(ss_path ++ ss_i);
+            //                 <p key=ss_i> {str(ss_i)} </p> 
+            //             }, 
+            //             fetched_ss_list.fns
+            //         )
+            //         |> Array.of_list
+            //         |> React.array;
+                        
+            //         str("asdf")
+            //     }
+            //     </div>
+            // };
+
+            <div> 
+                // <div>
+                //     {
+                //     List.map( 
+                //         ss_i => {
+                //             // Js.log(ss_i); 
+                //             preload_ss(ss_path ++ ss_i);
+                //             <p key=ss_i> {str(ss_i)} </p> 
+                //         }, 
+                //         fetched_ss_list.fns
+                //     )
+                //     |> Array.of_list
+                //     |> React.array;
+                // <div>
+                //     </div>
+
+                //     }
+                // </div>
 
 
-            <div onClick={handleClick2}> 
-            {
-                Js.log("nth ("++string_of_int(ssindex) ++ ") element is: " ++ ss_path ++ ss_first);
-                <img src=(ss_path ++ ss_first) width="200" height="100"/>
-            }
-            <br/>
-            {
-                Js.log("nth ("++string_of_int(ssindex) ++ ") element is: " ++ ss_path ++ ss_first);
-                <img src=(ss_path ++ ss_first) width="100%"/>                
-
-                // pre-load images
-                Js.log(fetched_ss_list.fns);
-                <div> 
-                (
-                    List.map( 
-                        ss_i => {
-                            Js.log(ss_i); 
-                            preload_ss();
-                            <p key=ss_i> {str(ss_i)} </p> 
-                        }, 
-                        fetched_ss_list.fns
-                    )
-                    |> Array.of_list
-                    |> React.array
-                )
+                <div>
+                    <button onClick={fetchSS}> {str("FETCH")} </button>
+                    <button onClick={nextSS}> {str("NEXT")} </button>
+                    <button onClick={prevSS}> {str("PREV")} </button>
+                    <br/>
+                    {
+                        Js.log("nth ("++string_of_int(ssindex) ++ ") element is: " ++ ss_path ++ ss_first);
+                        <img src=(ss_path ++ ss_first) width="200" height="100"/>
+                    }
+                    <br/>
+                    {
+                    Js.log("nth ("++string_of_int(ssindex) ++ ") element is: " ++ ss_path ++ ss_first);
+                    <img src=(ss_path ++ ss_first) width="100%"/> //    |>ignore;           
+                    }
                 </div>
-
-            }
             </div>;
-
         }
         | None => 
         {
