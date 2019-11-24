@@ -38,6 +38,7 @@ let make = () => {
         None // no destroying
     });
 
+    // side effect: Preloading images from the fetched filenames
     React.useEffect1( () => {
         switch sslist {
         | Some(fetched_ss_list : Decode.ss) => 
@@ -55,7 +56,6 @@ let make = () => {
 
             List.map( 
                 ss_i => {
-                    // Js.log(ss_i); 
                     preload_ss(ss_path ++ ss_i);
                     <p key=ss_i> {str(ss_i)} </p> 
                 }, 
@@ -85,89 +85,59 @@ let make = () => {
         setSSIndex( (ssindex > 0) ? (ssindex - 1) : ssindex) ;
     };
 
+    <div>
+        <button onClick={fetchSS}> {str("FETCH")} </button>
+        <button onClick={nextSS}> {str("NEXT")} </button>
+        <button onClick={prevSS}> {str("PREV")} </button>
+        (
+        switch sslist {
+            | Some(fetched_ss_list : Decode.ss) => 
+            {
+                // display
+                let ss_first = List.nth(fetched_ss_list.fns, ssindex);
+                let ss_path = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer_copied/";
 
-
-    switch sslist {
-        | Some(fetched_ss_list : Decode.ss) => 
-        {
-            // display
-            let ss_first = List.nth(fetched_ss_list.fns, ssindex);
-            let ss_path = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer_copied/";
-
-            // let preload_ss = [%raw {|
-            //     function(a) {
-            //         console.log("preloading: " + a);
-            //         const img = new Image();
-            //         img.src = a;
-            //         return;
-            //     }
-            //     |}];
-
-//            <div onClick={handleClick2}> 
-
-            // {
-            //     <div>
-            //     {
-            //         Js.log("asdf")        
-            //         List.map( 
-            //             ss_i => {
-            //                 // Js.log(ss_i); 
-            //                 preload_ss(ss_path ++ ss_i);
-            //                 <p key=ss_i> {str(ss_i)} </p> 
-            //             }, 
-            //             fetched_ss_list.fns
-            //         )
-            //         |> Array.of_list
-            //         |> React.array;
-                        
-            //         str("asdf")
-            //     }
-            //     </div>
-            // };
-
-            <div> 
-                // <div>
-                //     {
-                //     List.map( 
-                //         ss_i => {
-                //             // Js.log(ss_i); 
-                //             preload_ss(ss_path ++ ss_i);
-                //             <p key=ss_i> {str(ss_i)} </p> 
-                //         }, 
-                //         fetched_ss_list.fns
-                //     )
-                //     |> Array.of_list
-                //     |> React.array;
-                // <div>
-                //     </div>
-
-                //     }
-                // </div>
-
-
-                <div>
-                    <button onClick={fetchSS}> {str("FETCH")} </button>
-                    <button onClick={nextSS}> {str("NEXT")} </button>
-                    <button onClick={prevSS}> {str("PREV")} </button>
-                    <br/>
-                    {
-                        Js.log("nth ("++string_of_int(ssindex) ++ ") element is: " ++ ss_path ++ ss_first);
-                        <img src=(ss_path ++ ss_first) width="200" height="100"/>
-                    }
-                    <br/>
-                    {
-                    Js.log("nth ("++string_of_int(ssindex) ++ ") element is: " ++ ss_path ++ ss_first);
-                    <img src=(ss_path ++ ss_first) width="100%"/> //    |>ignore;           
-                    }
-                </div>
-            </div>;
+                <div> 
+                    <div>
+                        // <br/>
+                        // {
+                        //     Js.log("nth ("++string_of_int(ssindex) ++ ") element is: " ++ ss_path ++ ss_first);
+                        //     <img src=(ss_path ++ ss_first) width="200" height="100"/>
+                        // }
+                        <br/>
+                        {
+                            Js.log("nth ("++string_of_int(ssindex) ++ ") element is: " ++ ss_path ++ ss_first);
+                            <img src=(ss_path ++ ss_first) width="100%"/>          
+                        }
+                        <br/>
+                        {
+                            <div>
+                                <p> {str("List of fetched filenames:")} </p>
+                                <div>
+                                {
+                                    List.map( 
+                                        ss_i => {
+                                            <p key=ss_i> {str(ss_i)} </p>
+                                        }, 
+                                        fetched_ss_list.fns
+                                    )
+                                    |> Array.of_list
+                                    |> React.array;
+                                }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>;
+            }
+            | None => 
+            {
+                Js.log(sslist);
+                <div onClick={handleClick}> 
+                    {str("failed to fetch ss_list_json")}
+                </div>;
+            }
         }
-        | None => 
-        {
-            Js.log(sslist);
-            <div onClick={handleClick}> 
-                {str("failed to fetch ss_list_json")}
-            </div>;
-        }
-    }
+        )
+    </div>
 }
