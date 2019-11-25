@@ -84,8 +84,13 @@ let make = () => {
         Js.log("prev SS");
         setSSIndex( (ssindex > 0) ? (ssindex - 1) : ssindex) ;
     };
+    let timerCallbackOnTick = () => {
+        Js.log("tick!");
+        setSSIndex( (ssindex + 1) mod 60);
+    };
 
     <div>
+        <Timer cb=timerCallbackOnTick/>
         <button onClick={fetchSS}> {str("FETCH")} </button>
         <button onClick={nextSS}> {str("NEXT")} </button>
         <button onClick={prevSS}> {str("PREV")} </button>
