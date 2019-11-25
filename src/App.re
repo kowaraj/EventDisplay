@@ -12,9 +12,17 @@ let make = () => {
   <div>
     <Nav />
     {switch (url.path) {
-     | [""] => {Js.log("router: ' '"); <Third />} //<Home />
-     | ["third"] => <Third /> //<img src="https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer/ss_1573150824.png" width="400" height="200"/>
-     | _ => {Js.log("router: _"); <Third />} //<img src="https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer/ss_1573150824.png" width="500" height="300"/>}
-     }}
+    | [""] => {
+        //Js.log("router: ' '"); 
+        <Third />
+      } 
+    | ["third"] => {
+        <Third /> //<img src="https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer/ss_1573150824.png" width="400" height="200"/>
+      }
+    | _ => {
+        //Js.log("router: _"); 
+        <Third /> //<img src="https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer/ss_1573150824.png" width="500" height="300"/>}
+      } 
+    }}
   </div>;
 };

@@ -20,7 +20,6 @@ let make = (~cb) => {
                 | Start => {...s, isTicking: true}
                 | Stop => {...s, isTicking: false}
                 | Reset => {seconds: 60, isTicking: false}
-//                | Tick => { cb(); /*Js.log("tick");*/ s.isTicking == true && s.seconds > 1 ? {...s, seconds: s.seconds - 1} : {...s, isTicking: false}}
                 | Tick => { 
                     s.isTicking == true && s.seconds > 1 
                         ? { cb(); {...s, seconds: s.seconds - 1} } 
@@ -39,7 +38,7 @@ let make = (~cb) => {
 
     <div> 
         {
-            str("Timer: [" ++ string_of_int(state.seconds) ++ "] ")
+            str("Timer: [" ++ string_of_int(state.seconds) ++ "] is " ++ (state.isTicking ? "running " : "stopped ") )
         } 
         {
             state.isTicking
