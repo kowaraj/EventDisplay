@@ -16,7 +16,7 @@ let make = () => {
     );
     let (debug, setDebug) = React.useReducer(
         (_s, a) => a,
-        false
+        true
     );
 
     let doFetchJSON = () => {
@@ -88,19 +88,19 @@ let make = () => {
     [|sslist|]);
 
     let fetchSS = (_e) => {
-        //Js.log("fetch SS");
+        Js.log("fetch SS");
         callDoFetchJSON();
     };
     let nextSS = (_e) => {
-        //Js.log("next SS");
+        Js.log("next SS");
         setSSIndex( (ssindex + 1) mod sslistlen);
     };
     let prevSS = (_e) => {
-        //Js.log("prev SS");
+        Js.log("prev SS");
         setSSIndex( (ssindex > 0) ? (ssindex - 1) : ssindex) ;
     };
     let timerCallbackOnTick = () => {
-        //Js.log("1s tick!");
+        Js.log("-1s tick!");
         setSSIndex( (ssindex + 1) mod sslistlen);
     };
     let switchDebug = (_e) => {
@@ -110,10 +110,12 @@ let make = () => {
     <div>
         <div hidden=(!debug)> 
             <>
-            <Timer cb=timerCallbackOnTick/>
+            <InfiniteTimer cb=timerCallbackOnTick/>
             <button onClick={fetchSS}> {str("FETCH")} </button>
             <button onClick={nextSS}> {str("NEXT")} </button>
-            <button onClick={prevSS}> {str("PREV")} </button>
+            <button onClick={prevSS}> {str("PREV")} </button> <br/>
+            <p> {str("Total number of screenshots: " ++ string_of_int(sslistlen) )}</p>
+            <p> {str("Currently displayed is: " ++ string_of_int(ssindex) )}</p>
             </>
         </div>
         (
