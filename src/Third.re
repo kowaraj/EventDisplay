@@ -12,7 +12,7 @@ let make = () => {
         None // initial state
     );
     let (sss, setSSS) = React.useState( () => {i: 0, len: 0})
-    let (lastss, setLastSS) = React.useState( () => 0 )
+//    let (lastss, setLastSS) = React.useState( () => 0 )
     let (debug, setDebug) = React.useReducer(
         (_s, a) => a,
         true
@@ -128,10 +128,6 @@ let make = () => {
             {
                 // display
                 let ss_first = List.nth(fetched_ss_list.fns, sss.i);
-                let ss_last = sss.len - sss.i;
-                Js.log(ss_last);
-//                ((ss_last) == 2) ? callDoFetchJSON() : ();
-
                 let ss_path = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer_copied/";
 
                 <div> 
