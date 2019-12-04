@@ -1,15 +1,21 @@
 let str = ReasonReact.string;
 
+type sss = {
+    i: int, 
+    len: int
+};
+
 [@react.component]
 let make = () => {
     let (sslist, setSSList) = React.useReducer(
         (_oldState, actionIsNewState) => actionIsNewState,  //state after action
         None // initial state
     );
-    // let (ssindex, setSSIndex) = React.useReducer(
+    // let (ssindexr, setSSIndexr) = React.useReducer(
     //     (_s, a) => a,
     //     0
     // );
+    let (sss, setSSS) = React.useState( () => {i: 0, len: 0})
     let (ssindex, setSSIndex) = React.useState( () => 0);
     let (sslistlen, setSSListLen) = React.useReducer(
         (_s, a) => a,
@@ -37,11 +43,13 @@ let make = () => {
     let callDoFetchJSON = () => {
         doFetchJSON()
         |> Js.Promise.then_( result => { 
-            //Js.log("doFetchJSON results are: "); 
-            //Js.log(result); 
+            Js.log("doFetchJSON results are: "); 
+            Js.log(result); 
             switch result { 
-                | Some(r  : Decode.ss) => setSSListLen(List.length(r.fns))
-                | None => setSSListLen(0)
+//                | Some(r  : Decode.ss) => setSSListLen(List.length(r.fns))
+                | Some(r  : Decode.ss) => setSSS(s => {...s, len: List.length(r.fns)})
+//                | None => setSSListLen(0)
+                | None => setSSS(s => {...s, len: 0})
             }
             //Js.log("ss_list len = " ++ string_of_int(sslistlen));
             setSSList(result);
@@ -104,19 +112,12 @@ let make = () => {
         ()
     };
     let timerCallbackOnTick = () => {
-        Js.log("Tick IN >>      : " ++ string_of_int(ssindex));
-        Js.log("                : " ++ string_of_int(sslistlen));
-        setSSIndex( x => (sslistlen > 1) ? ((x + 1) mod sslistlen) : x  );
-        Js.log("        << OUT  : " ++ string_of_int(ssindex))
+        // Js.log("Tick IN >>      : " ++ string_of_int(ssindex));
+        // Js.log("                : " ++ string_of_int(sslistlen));
+//        setSSIndex( x => (sslistlen > 1) ? ((x + 1) mod sslistlen) : x  );
+        setSSS( s => {...s, i: (s.len > 1) ? ((s.i + 1) mod s.len) : s.i})
+        // Js.log("        << OUT  : " ++ string_of_int(ssindex))
     };
-
-
-    React.useEffect0(() => {
-            let timerId = Js.Global.setInterval( () => { timerCallbackOnTick() }, 1000 );
-            Some( () => Js.Global.clearInterval( timerId ));
-        }
-    );
-
 
     let switchDebug = (_e) => {
         setDebug( !debug );
@@ -130,7 +131,9 @@ let make = () => {
             <button onClick={nextSS}> {str("NEXT")} </button>
             <button onClick={prevSS}> {str("PREV")} </button> <br/>
             <p> {str("Total number of screenshots: " ++ string_of_int(sslistlen) )}</p>
+            <p> {str("Total number of screenshots: " ++ string_of_int(sss.len) )}</p>
             <p> {str("Currently displayed is: " ++ string_of_int(ssindex) )}</p>
+            <p> {str("Currently displayed is: " ++ string_of_int(sss.i) )}</p>
             </>
         </div>
         (
@@ -138,14 +141,15 @@ let make = () => {
             | Some(fetched_ss_list : Decode.ss) => 
             {
                 // display
-                let ss_first = List.nth(fetched_ss_list.fns, ssindex);
+//                let ss_first = List.nth(fetched_ss_list.fns, ssindex);
+                let ss_first = List.nth(fetched_ss_list.fns, sss.i);
                 let ss_path = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer_copied/";
 
                 <div> 
                     <div>
                         <br/>
                         {
-                            //Js.log("nth ("++string_of_int(ssindex) ++ ") element is: " ++ ss_path ++ ss_first);
+                            Js.log("nth ("++string_of_int(ssindex) ++ ") element is: " ++ ss_path ++ ss_first);
                             <img src=(ss_path ++ ss_first) width="100%"/>          
                         }
                         <br/>

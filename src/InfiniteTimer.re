@@ -13,6 +13,7 @@ module Button = {
 [@react.component]
 let make = (~cb) => {
 
+    let savedCallback = React.useRef(cb);
     let (state, dispatch) = React.useReducer(
         (s,a) => {
             switch a {
@@ -25,7 +26,8 @@ let make = (~cb) => {
     );
 
     React.useEffect0(() => {
-            let timerId = Js.Global.setInterval( () => dispatch(Tick), 1000 );
+//            let timerId = Js.Global.setInterval( () => dispatch(Tick), 1000 );
+            let timerId = Js.Global.setInterval( () => React.Ref.(savedCallback->current()), 1000 );
             Some( () => Js.Global.clearInterval( timerId ) );
         }
     );
