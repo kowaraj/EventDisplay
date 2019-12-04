@@ -11,16 +11,8 @@ let make = () => {
         (_oldState, actionIsNewState) => actionIsNewState,  //state after action
         None // initial state
     );
-    // let (ssindexr, setSSIndexr) = React.useReducer(
-    //     (_s, a) => a,
-    //     0
-    // );
     let (sss, setSSS) = React.useState( () => {i: 0, len: 0})
-    let (ssindex, setSSIndex) = React.useState( () => 0);
-    let (sslistlen, setSSListLen) = React.useReducer(
-        (_s, a) => a,
-        0
-    );
+    let (lastss, setLastSS) = React.useState( () => 0 )
     let (debug, setDebug) = React.useReducer(
         (_s, a) => a,
         true
@@ -46,9 +38,7 @@ let make = () => {
             Js.log("doFetchJSON results are: "); 
             Js.log(result); 
             switch result { 
-//                | Some(r  : Decode.ss) => setSSListLen(List.length(r.fns))
                 | Some(r  : Decode.ss) => setSSS(s => {...s, len: List.length(r.fns)})
-//                | None => setSSListLen(0)
                 | None => setSSS(s => {...s, len: 0})
             }
             //Js.log("ss_list len = " ++ string_of_int(sslistlen));
@@ -59,9 +49,11 @@ let make = () => {
     };
 
     React.useEffect0( () => {
+        Js.log("Fetching data! ")
         callDoFetchJSON();        
         None // no destroying
     });
+//    ,  [|lastss|]);
 
     // side effect: Preloading images from the fetched filenames
     React.useEffect1( () => {
@@ -102,21 +94,17 @@ let make = () => {
         callDoFetchJSON();
     };
     let nextSS = (_e) => {
-        //Js.log("next SS");
+        Js.log("next SS");
         //setSSIndex( (ssindex + 1) mod sslistlen); 
         ();
     };
     let prevSS = (_e) => {
-        //Js.log("prev SS");
+        Js.log("prev SS");
         //setSSIndex( (ssindex > 0) ? (ssindex - 1) : ssindex) ;
         ()
     };
     let timerCallbackOnTick = () => {
-        // Js.log("Tick IN >>      : " ++ string_of_int(ssindex));
-        // Js.log("                : " ++ string_of_int(sslistlen));
-//        setSSIndex( x => (sslistlen > 1) ? ((x + 1) mod sslistlen) : x  );
         setSSS( s => {...s, i: (s.len > 1) ? ((s.i + 1) mod s.len) : s.i})
-        // Js.log("        << OUT  : " ++ string_of_int(ssindex))
     };
 
     let switchDebug = (_e) => {
@@ -130,9 +118,7 @@ let make = () => {
             <button onClick={fetchSS}> {str("FETCH")} </button>
             <button onClick={nextSS}> {str("NEXT")} </button>
             <button onClick={prevSS}> {str("PREV")} </button> <br/>
-            <p> {str("Total number of screenshots: " ++ string_of_int(sslistlen) )}</p>
             <p> {str("Total number of screenshots: " ++ string_of_int(sss.len) )}</p>
-            <p> {str("Currently displayed is: " ++ string_of_int(ssindex) )}</p>
             <p> {str("Currently displayed is: " ++ string_of_int(sss.i) )}</p>
             </>
         </div>
@@ -141,15 +127,18 @@ let make = () => {
             | Some(fetched_ss_list : Decode.ss) => 
             {
                 // display
-//                let ss_first = List.nth(fetched_ss_list.fns, ssindex);
                 let ss_first = List.nth(fetched_ss_list.fns, sss.i);
+                let ss_last = sss.len - sss.i;
+                Js.log(ss_last);
+//                ((ss_last) == 2) ? callDoFetchJSON() : ();
+
                 let ss_path = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer_copied/";
 
                 <div> 
                     <div>
                         <br/>
                         {
-                            Js.log("nth ("++string_of_int(ssindex) ++ ") element is: " ++ ss_path ++ ss_first);
+                            Js.log("nth ("++string_of_int(sss.i) ++ ") element is: " ++ ss_path ++ ss_first);
                             <img src=(ss_path ++ ss_first) width="100%"/>          
                         }
                         <br/>
