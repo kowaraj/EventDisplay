@@ -6,10 +6,11 @@ let make = () => {
         (_oldState, actionIsNewState) => actionIsNewState,  //state after action
         None // initial state
     );
-    let (ssindex, setSSIndex) = React.useReducer(
-        (_s, a) => a,
-        0
-    );
+    // let (ssindex, setSSIndex) = React.useReducer(
+    //     (_s, a) => a,
+    //     0
+    // );
+    let (ssindex, setSSIndex) = React.useState( () => 0);
     let (sslistlen, setSSListLen) = React.useReducer(
         (_s, a) => a,
         0
@@ -18,6 +19,7 @@ let make = () => {
         (_s, a) => a,
         true
     );
+
 
     let doFetchJSON = () => {
         //Js.log("fetching list of screenshots in json");
@@ -92,17 +94,30 @@ let make = () => {
         callDoFetchJSON();
     };
     let nextSS = (_e) => {
-        Js.log("next SS");
-        setSSIndex( (ssindex + 1) mod sslistlen);
+        //Js.log("next SS");
+        //setSSIndex( (ssindex + 1) mod sslistlen); 
+        ();
     };
     let prevSS = (_e) => {
-        Js.log("prev SS");
-        setSSIndex( (ssindex > 0) ? (ssindex - 1) : ssindex) ;
+        //Js.log("prev SS");
+        //setSSIndex( (ssindex > 0) ? (ssindex - 1) : ssindex) ;
+        ()
     };
     let timerCallbackOnTick = () => {
-        Js.log("-1s tick!");
-        setSSIndex( (ssindex + 1) mod sslistlen);
+        Js.log("Tick IN >>      : " ++ string_of_int(ssindex));
+        Js.log("                : " ++ string_of_int(sslistlen));
+        setSSIndex( x => (sslistlen > 1) ? ((x + 1) mod sslistlen) : x  );
+        Js.log("        << OUT  : " ++ string_of_int(ssindex))
     };
+
+
+    React.useEffect0(() => {
+            let timerId = Js.Global.setInterval( () => { timerCallbackOnTick() }, 1000 );
+            Some( () => Js.Global.clearInterval( timerId ));
+        }
+    );
+
+
     let switchDebug = (_e) => {
         setDebug( !debug );
     };

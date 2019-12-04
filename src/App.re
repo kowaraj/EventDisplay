@@ -17,7 +17,7 @@ let make = () => {
         <Third />
       } 
     | ["third"] => {
-        <Third /> //<img src="https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer/ss_1573150824.png" width="400" height="200"/>
+        <Test /> //<img src="https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer/ss_1573150824.png" width="400" height="200"/>
       }
     | _ => {
         //Js.log("router: _"); 
