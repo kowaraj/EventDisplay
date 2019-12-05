@@ -1,10 +1,12 @@
 type ss  = {
     fns: list(string), 
+    bi: int
     };
 
 let ss_list_decoder = ss_list_json => {
     Json.Decode.{
-        fns: field("screenshots", list(string), ss_list_json)
+        fns: field("screenshots", list(string), ss_list_json), 
+        bi: field("buffer", int, ss_list_json)
     }
 }
 

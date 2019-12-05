@@ -2,17 +2,28 @@ let str = ReasonReact.string;
 
 type sss = {
     i: int, 
-    len: int
+    len: int,
+    bi: int, 
+    sslist1: list(string),
+    sslist2: list(string)
 };
+let url_json_list = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/ss_list.json";
 
 [@react.component]
 let make = () => {
+
     let (sslist, setSSList) = React.useReducer(
         (_oldState, actionIsNewState) => actionIsNewState,  //state after action
-        None // initial state
+        [] // initial state
     );
-    let (sss, setSSS) = React.useState( () => {i: 0, len: 0})
-//    let (lastss, setLastSS) = React.useState( () => 0 )
+
+    let (sslist2, setSSList2) = React.useReducer(
+        (_oldState, actionIsNewState) => actionIsNewState,  //state after action
+        [] // initial state
+    );
+    let (ssurl, setSSUrl) = React.useState( () => "")
+
+    let (sss, setSSS) = React.useState( () => {i: 0, len: 0, bi: 0, sslist1: [], sslist2: []})
     let (debug, setDebug) = React.useReducer(
         (_s, a) => a,
         true
@@ -22,7 +33,7 @@ let make = () => {
     let doFetchJSON = () => {
         //Js.log("fetching list of screenshots in json");
         Js.Promise.(
-            Fetch.fetch("https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer_copied/ss_list.json") 
+            Fetch.fetch(url_json_list) 
             |> then_(Fetch.Response.json)
             |> then_(json => {
                 json 
@@ -35,59 +46,75 @@ let make = () => {
     let callDoFetchJSON = () => {
         doFetchJSON()
         |> Js.Promise.then_( result => { 
-            Js.log("doFetchJSON results are: "); 
-            Js.log(result); 
+            Js.log("callDoFetchJSON: "); Js.log(result); 
             switch result { 
-                | Some(r  : Decode.ss) => setSSS(s => {...s, len: List.length(r.fns)})
+                | Some(r  : Decode.ss) => {
+                    switch r.bi {
+                        | 1 => {
+                                    setSSS(s => {
+                                        ...s, 
+                                        len: List.length(r.fns), 
+                                        bi: r.bi,
+                                        sslist1: r.fns
+                                    })
+                        }
+                        | 2 => {
+                                    setSSS(s => {
+                                        ...s, 
+                                        len: List.length(r.fns), 
+                                        bi: r.bi,
+                                        sslist2: r.fns
+                                    })
+                        }
+                        | _ => {    () }
+                    }
+                }
                 | None => setSSS(s => {...s, len: 0})
             }
-            //Js.log("ss_list len = " ++ string_of_int(sslistlen));
-            setSSList(result);
             Js.Promise.resolve(); 
         } )
         |> ignore
     };
 
-    React.useEffect0( () => {
-        Js.log("Fetching data! ")
-        callDoFetchJSON();        
-        None // no destroying
-    });
-//    ,  [|lastss|]);
+    // React.useEffect0( () => {
+    //     Js.log("Fetching data! ")
+    //     callDoFetchJSON();        
+    //     None // no destroying
+    // });
 
-    // side effect: Preloading images from the fetched filenames
-    React.useEffect1( () => {
-        switch sslist {
-        | Some(fetched_ss_list : Decode.ss) => 
-        {
-            // preloading...
-            let ss_path = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer_copied/";
-            let preload_ss = [%raw {|
-                function(a) {
-                    //console.log("preloading: " + a);
-                    const img = new Image();
-                    img.src = a;
-                    return;
-                }
-                |}];
+    // // side effect: Preloading images from the fetched filenames
+    // React.useEffect1( () => {
+    //     switch sslist {
+    //     | Some(fetched_ss_list : Decode.ss) => 
+    //     {
+    //         // preloading...
+    //         let ss_path = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer_1/";
+    //         let preload_ss = [%raw {|
+    //             function(a) {
+    //                 //console.log("preloading: " + a);
+    //                 const img = new Image();
+    //                 img.src = a;
+    //                 return;
+    //             }
+    //             |}];
 
-            List.map( 
-                ss_i => {
-                    preload_ss(ss_path ++ ss_i) |> ignore;
-                    <p key=ss_i> {str(ss_i)} </p> 
-                }, 
-                fetched_ss_list.fns
-            )
-            |> Array.of_list
-            |> React.array
-            |> ignore;
+    //         List.map( 
+    //             ss_i => {
+    //                 preload_ss(ss_path ++ ss_i) |> ignore;
+    //                 <p key=ss_i> {str(ss_i)} </p> 
+    //             }, 
+    //             fetched_ss_list.fns
+    //         )
+    //         |> Array.of_list
+    //         |> React.array
+    //         |> ignore;
             
-            None;
-        }
-        | None => None;
-        }
-    }, 
-    [|sslist|]);
+    //         None;
+    //     }
+    //     | None => None;
+    //     }
+    // }, 
+    // [|sslist|]);
 
     let fetchSS = (_e) => {
         Js.log("fetch SS");
@@ -104,69 +131,85 @@ let make = () => {
         ()
     };
     let timerCallbackOnTick = () => {
-        setSSS( s => {...s, i: (s.len > 1) ? ((s.i + 1) mod s.len) : s.i})
+        Js.log("timerCallbackOnTick")
+        //setSSS( s => {...s, i: (s.len > 1) ? ((s.i + 1) mod s.len) : s.i} )
     };
 
     let switchDebug = (_e) => {
         setDebug( !debug );
     };
 
+    let ss_path = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/";
+    Js.log("sss.bi = " ++ string_of_int(sss.bi))
+    Js.log("sss.len = " ++ string_of_int(sss.len));
+
+    // switch sss.bi {
+    //     | 1 => {
+    //                 let ss_name = List.nth(sslist, sss.i);
+    //                 setSSUrl(_ => ss_path ++ "buffer_1/" ++ ss_name)
+    //             }
+    //     | 2 => {        
+    //                 let ss_name = List.nth(sslist2, sss.i);
+    //                 setSSUrl(_ => ss_path ++ "buffer_2/" ++ ss_name)
+    //             }
+    //     | _ => {        
+    //                 setSSUrl(_ => ss_path ++ "buffer_2/" ++ "noname")
+    //             }
+    // };
+
     <div>
+        <br/>
+        {
+            Js.log("URL: " ++ ssurl);
+            <img src=ssurl width="100%"/>
+        }
+        <br/>
         <div hidden=(!debug)> 
             <>
-            <InfiniteTimer cb=timerCallbackOnTick/>
+            //<InfiniteTimer cb=timerCallbackOnTick/>
             <button onClick={fetchSS}> {str("FETCH")} </button>
             <button onClick={nextSS}> {str("NEXT")} </button>
             <button onClick={prevSS}> {str("PREV")} </button> <br/>
             <p> {str("Total number of screenshots: " ++ string_of_int(sss.len) )}</p>
             <p> {str("Currently displayed is: " ++ string_of_int(sss.i) )}</p>
+            <p> {str("Currently displayed batch is: " ++ string_of_int(sss.bi))}</p>
             </>
         </div>
-        (
-        switch sslist {
-            | Some(fetched_ss_list : Decode.ss) => 
-            {
-                // display
-                let ss_first = List.nth(fetched_ss_list.fns, sss.i);
-                let ss_path = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer_copied/";
 
-                <div> 
-                    <div>
-                        <br/>
-                        {
-                            Js.log("nth ("++string_of_int(sss.i) ++ ") element is: " ++ ss_path ++ ss_first);
-                            <img src=(ss_path ++ ss_first) width="100%"/>          
-                        }
-                        <br/>
-                        {
-                            <div hidden=(!debug) height="300px">
-                                <p> {str("List of fetched filenames:")} </p>
-                                <div>
-                                {
-                                    List.map( 
-                                        ss_i => {
-                                            <p key=ss_i> {str(ss_i)} </p>
-                                        }, 
-                                        fetched_ss_list.fns
-                                    )
-                                    |> Array.of_list
-                                    |> React.array;
-                                }
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>;
-            }
-            | None => 
+        <div style=( ReactDOMRe.Style.make(~float="left", ~width="50%", ()))>
+        (
+            <div>
             {
-                //Js.log(sslist);
-                <div> 
-                    {str("Failed to fetch the data")}
-                </div>;
+                List.map( 
+                    ss_i => {
+                        <p key=ss_i> {str(ss_i)} </p>
+                    }, 
+                    sslist
+                )
+                |> Array.of_list
+                |> React.array;
             }
-        }
+            </div>
         )
+        </div>
+
+        <div style=( ReactDOMRe.Style.make(~float="left", ~width="50%", ()))>
+        (
+            <div>
+            {
+                List.map( 
+                    ss_i => {
+                        <p key=ss_i> {str(ss_i)} </p>
+                    }, 
+                    sslist2
+                )
+                |> Array.of_list
+                |> React.array;
+            }
+            </div>
+        )
+        </div>
+
         <>
             <button onClick={switchDebug}> {str("DEBUG")} </button>
         </>
