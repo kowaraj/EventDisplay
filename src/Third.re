@@ -1,6 +1,6 @@
 let str = ReasonReact.string;
 
-type sss = {
+type sss_type = {
     i: int, 
     len: int,
     bi: int, 
@@ -8,6 +8,8 @@ type sss = {
     sslist2: list(string)
 };
 let url_json_list = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/ss_list.json";
+let ss_path1 = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer_1/";
+let ss_path2 = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer_2/";
 
 [@react.component]
 let make = () => { 
@@ -44,7 +46,7 @@ let make = () => {
                                         ...s, 
                                         len: List.length(r.fns), 
                                         bi: r.bi,
-                                        sslist1: r.fns
+                                        sslist1: List.map(fn => ss_path1 ++ fn, r.fns),
                                     })
                         }
                         | 2 => {
@@ -52,7 +54,7 @@ let make = () => {
                                         ...s, 
                                         len: List.length(r.fns), 
                                         bi: r.bi,
-                                        sslist2: r.fns
+                                        sslist2: List.map(fn => ss_path2 ++ fn, r.fns)
                                     })
                         }
                         | _ => {    () }
@@ -65,11 +67,11 @@ let make = () => {
         |> ignore
     };
 
-    // React.useEffect0( () => {
-    //     Js.log("Fetching data! ")
-    //     callDoFetchJSON();        
-    //     None // no destroying
-    // });
+    React.useEffect0( () => {
+        Js.log("MOUNTED: Fetching data! ")
+        callDoFetchJSON();        
+        None // no destroying
+    });
 
     // // side effect: Preloading images from the fetched filenames
     // React.useEffect1( () => {
@@ -119,10 +121,10 @@ let make = () => {
         //setSSIndex( (ssindex > 0) ? (ssindex - 1) : ssindex) ;
         ()
     };
-    let timerCallbackOnTick = () => {
-        Js.log("timerCallbackOnTick")
-        setSSS( s => {...s, i: (s.len > 1) ? ((s.i + 1) mod s.len) : s.i} )
-    };
+    // let timerCallbackOnTick = () => {
+    //     Js.log("timerCallbackOnTick")
+    //     setSSS( s => {...s, i: (s.len > 1) ? ((s.i + 1) mod s.len) : s.i} )
+    // };
 
     let switchDebug = (_e) => {
         setDebug( !debug );
@@ -132,47 +134,28 @@ let make = () => {
     Js.log("sss.bi = " ++ string_of_int(sss.bi))
     Js.log("sss.len = " ++ string_of_int(sss.len));
 
-    // switch sss.bi {
-    //     | 1 => {
-    //                 let ss_name = List.nth(sslist, sss.i);
-    //                 setSSUrl(_ => ss_path ++ "buffer_1/" ++ ss_name)
-    //             }
-    //     | 2 => {        
-    //                 let ss_name = List.nth(sslist2, sss.i);
-    //                 setSSUrl(_ => ss_path ++ "buffer_2/" ++ ss_name)
-    //             }
-    //     | _ => {        
-    //                 setSSUrl(_ => ss_path ++ "buffer_2/" ++ "noname")
-    //             }
-    // };
-
     <div>
         <div>
         (
-            switch sss.bi {
-                | 1 => {
-                            let ss_name = List.nth(sss.sslist1, sss.i);
-                            <ShowSS ssurl=(ss_path ++ "buffer_1/" ++ ss_name )/>
-                        }
-                | 2 => {        
-                            let ss_name = List.nth(sss.sslist2, sss.i);
-                            <ShowSS ssurl=(ss_path ++ "buffer_2/" ++ ss_name )/>                }
-                | _ => {        
-                        
-                            <ShowSS ssurl=("")/>
-                        }
-            }
+            <Display buf=(
+                switch sss.bi {
+                    | 1 => {
+                        Some(sss.sslist1)
+                    }
+                    | 2 => {
+                        Some(sss.sslist2)
+                    }      
+                    | _ => {
+                        None
+                    }
+                }
+            )/>
         )
         </div>
-        // <br/>
-        // {
-        //     Js.log("URL: " ++ ssurl);
-        //     <img src=ssurl width="100%"/>
-        // }
-        // <br/>
+
         <div hidden=(!debug)> 
             <>
-            <InfiniteTimer cb=timerCallbackOnTick/>
+            // <InfiniteTimer cb=timerCallbackOnTick/>
             <button onClick={fetchSS}> {str("FETCH")} </button>
             <button onClick={nextSS}> {str("NEXT")} </button>
             <button onClick={prevSS}> {str("PREV")} </button> <br/>
