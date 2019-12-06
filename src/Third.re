@@ -10,19 +10,8 @@ type sss = {
 let url_json_list = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/ss_list.json";
 
 [@react.component]
-let make = () => {
-
-    let (sslist, setSSList) = React.useReducer(
-        (_oldState, actionIsNewState) => actionIsNewState,  //state after action
-        [] // initial state
-    );
-
-    let (sslist2, setSSList2) = React.useReducer(
-        (_oldState, actionIsNewState) => actionIsNewState,  //state after action
-        [] // initial state
-    );
+let make = () => { 
     let (ssurl, setSSUrl) = React.useState( () => "")
-
     let (sss, setSSS) = React.useState( () => {i: 0, len: 0, bi: 0, sslist1: [], sslist2: []})
     let (debug, setDebug) = React.useReducer(
         (_s, a) => a,
@@ -132,7 +121,7 @@ let make = () => {
     };
     let timerCallbackOnTick = () => {
         Js.log("timerCallbackOnTick")
-        //setSSS( s => {...s, i: (s.len > 1) ? ((s.i + 1) mod s.len) : s.i} )
+        setSSS( s => {...s, i: (s.len > 1) ? ((s.i + 1) mod s.len) : s.i} )
     };
 
     let switchDebug = (_e) => {
@@ -158,15 +147,32 @@ let make = () => {
     // };
 
     <div>
-        <br/>
-        {
-            Js.log("URL: " ++ ssurl);
-            <img src=ssurl width="100%"/>
-        }
-        <br/>
+        <div>
+        (
+            switch sss.bi {
+                | 1 => {
+                            let ss_name = List.nth(sss.sslist1, sss.i);
+                            <ShowSS ssurl=(ss_path ++ "buffer_1/" ++ ss_name )/>
+                        }
+                | 2 => {        
+                            let ss_name = List.nth(sss.sslist2, sss.i);
+                            <ShowSS ssurl=(ss_path ++ "buffer_2/" ++ ss_name )/>                }
+                | _ => {        
+                        
+                            <ShowSS ssurl=("")/>
+                        }
+            }
+        )
+        </div>
+        // <br/>
+        // {
+        //     Js.log("URL: " ++ ssurl);
+        //     <img src=ssurl width="100%"/>
+        // }
+        // <br/>
         <div hidden=(!debug)> 
             <>
-            //<InfiniteTimer cb=timerCallbackOnTick/>
+            <InfiniteTimer cb=timerCallbackOnTick/>
             <button onClick={fetchSS}> {str("FETCH")} </button>
             <button onClick={nextSS}> {str("NEXT")} </button>
             <button onClick={prevSS}> {str("PREV")} </button> <br/>
@@ -184,7 +190,7 @@ let make = () => {
                     ss_i => {
                         <p key=ss_i> {str(ss_i)} </p>
                     }, 
-                    sslist
+                    sss.sslist1
                 )
                 |> Array.of_list
                 |> React.array;
@@ -201,7 +207,7 @@ let make = () => {
                     ss_i => {
                         <p key=ss_i> {str(ss_i)} </p>
                     }, 
-                    sslist2
+                    sss.sslist2
                 )
                 |> Array.of_list
                 |> React.array;
