@@ -24,7 +24,7 @@ let make = () => {
     let doFetchJSON = () => {
         //Js.log("fetching list of screenshots in json");
         Js.Promise.(
-            Fetch.fetch(url_json_list) 
+            Fetch.fetch(url_json_list ++ "?" ++ string_of_float(Random.float(0.1)) )
             |> then_(Fetch.Response.json)
             |> then_(json => {
                 json 
@@ -130,6 +130,11 @@ let make = () => {
         setDebug( !debug );
     };
 
+    let displayCallback = () => {
+        Js.log("------display---------------callback-----------")
+        callDoFetchJSON();
+    };
+
     let ss_path = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/";
     Js.log("sss.bi = " ++ string_of_int(sss.bi))
     Js.log("sss.len = " ++ string_of_int(sss.len));
@@ -137,7 +142,7 @@ let make = () => {
     <div>
         <div>
         (
-            <Display buf=(
+            <Display cb=displayCallback buf=(
                 switch sss.bi {
                     | 1 => {
                         Some(sss.sslist1)
@@ -171,7 +176,7 @@ let make = () => {
             {
                 List.map( 
                     ss_i => {
-                        <p key=ss_i> {str(ss_i)} </p>
+                        <p key=ss_i> {str(Util.fn_sub(ss_i,20,17))} </p>
                     }, 
                     sss.sslist1
                 )
@@ -188,7 +193,7 @@ let make = () => {
             {
                 List.map( 
                     ss_i => {
-                        <p key=ss_i> {str(ss_i)} </p>
+                        <p key=ss_i> {str(Util.fn_sub(ss_i,20,17))} </p>
                     }, 
                     sss.sslist2
                 )

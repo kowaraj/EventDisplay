@@ -22,26 +22,35 @@ let state_to_str = (s) => {
 let preloaded_im = Util.preload_image2("https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer/ss_1574257457.png");
 
 [@react.component]
-let make = (~buf) => {
+let make = (~cb, ~buf) => {
 
     let (ss, dispatch) = 
         React.useReducer( 
             (state, action) => switch (action) { 
                 | Init(buf) => {
                     Js.log("DISPLAY:::Dispatch( Init ) ---> " ++ state_to_str(state));
-                    let new_s = {...state, isInitialized: true, buffer: buf, nextBuffer: buf}
+                    Js.log(buf)
+                    Util.preload_images(Array.of_list(buf)) |> ignore;
+                    let new_s = {...state, isInitialized: true, buffer: buf, nextBuffer: ["init"]}
                     //Js.log("DISPLAY:::Dispatch( Init ) -----------> " ++ state_to_str(state));
                     new_s
                     }
                 | Update(nextbuf) => { 
-                    Js.log("DISPLAY:::Dispatch( Update )")
-                    state
+                    Js.log("DISPLAY:::Dispatch( Update )");
+                    Util.preload_images(Array.of_list(nextbuf)) |> ignore;
+                    {...state, nextBuffer: nextbuf}
                     }
                 | Tick => {
-                    Js.log("DISPLAY:::Dispatch( Tick )")
-                    let rollover = (state.index == List.length(state.buffer) - 1)
+                    let len = List.length(state.buffer)
+                    let i = state.index
+                    Js.log("DISPLAY:::Dispatch( Tick ) " ++ string_of_int(len) ++ " " ++ string_of_int(i) );
+
+                    (i == len -2) ? cb() : ()
+
+                    let rollover = (i == len - 1)
                     rollover 
-                    ? { List.length(state.nextBuffer) != 0 
+                    ? { 
+                        List.length(state.nextBuffer) != 0 
                         ? {...state, index: 0, buffer: state.nextBuffer, nextBuffer: []}
                         : {...state, index: 0}
                     }
@@ -95,9 +104,9 @@ let make = (~buf) => {
             {
                 Js.log("******************************************" ++ state_to_str(ss));
                 let fnstr1 = Util.fns_to_str(ss.buffer);
-                //Js.log("buffer1 = " ++ fnstr1);
-                let fnstr2 = Util.fns_to_str(ss.buffer);
-                //Js.log("buffer2 = " ++ fnstr2);
+                Js.log("buffer  = " ++ fnstr1);
+                let fnstr2 = Util.fns_to_str(ss.nextBuffer);
+                Js.log("bufferN = " ++ fnstr2);
                 <p> { str(fnstr1)} <br /> { str(fnstr2)} </p>
             }
             </div>
@@ -112,6 +121,7 @@ let make = (~buf) => {
                     }
                 | true => {
                     let fn = List.nth(ss.buffer, ss.index);
+                    Js.log(fn);
                     <p id="preloaded_im"> {str(Util.fn_grep(fn))}
                         <img src={fn} width="100%"/>
                     </p>
