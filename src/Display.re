@@ -100,7 +100,7 @@ let make = (~cb, ~buf) => {
     // Rendering the component
     {
         <div style=Style.ss>
-            <div>
+            <div hidden=true>
             {
                 Js.log("******************************************" ++ state_to_str(ss));
                 let fnstr1 = Util.fns_to_str(ss.buffer);
@@ -122,9 +122,12 @@ let make = (~cb, ~buf) => {
                 | true => {
                     let fn = List.nth(ss.buffer, ss.index);
                     Js.log(fn);
-                    <p id="preloaded_im"> {str(Util.fn_grep(fn))}
-                        <img src={fn} width="100%"/>
-                    </p>
+                    <div> 
+                        <p hidden=true id="preloaded_im"> {str(Util.fn_grep(fn))} </p>
+                        <div>
+                            <img src={fn} width="100%"/>
+                        </div>
+                    </div>
                     }
                 }
             }

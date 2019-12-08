@@ -32,17 +32,17 @@ let make = (~cb) => {
         }
     );
 
-    <div> 
+    <div hidden=true> 
         {
             str("Infinite timer is " ++ (state.isTicking ? "running " : "stopped ") )
         } 
-        {
-            state.isTicking
-            ? <Button label="STOP" onClick={_event => dispatch(Stop)} />
-            : <>
-                <Button label="START" onClick={_event => dispatch(Start)} />
-            </>
-        }
+        // {
+        //     state.isTicking
+        //     ? <Button label="STOP" onClick={_event => dispatch(Stop)} />
+        //     : <>
+        //         <Button label="START" onClick={_event => dispatch(Start)} />
+        //     </>
+        // }
 
     </div>;
 };

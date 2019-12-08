@@ -7,6 +7,10 @@ let ss = {ReactDOMRe.Style.make(
     ~width="100%", 
     () )};
 
+let display_div = {ReactDOMRe.Style.make(
+    ~width="90%", 
+    () )};
+
 let h_meme_url = {ReactDOMRe.Style.make(
     ~maxWidth="600px", 
     ~maxHeight="350px", 

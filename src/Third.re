@@ -17,7 +17,7 @@ let make = () => {
     let (sss, setSSS) = React.useState( () => {i: 0, len: 0, bi: 0, sslist1: [], sslist2: []})
     let (debug, setDebug) = React.useReducer(
         (_s, a) => a,
-        true
+        false
     );
 
 
@@ -139,7 +139,7 @@ let make = () => {
     Js.log("sss.bi = " ++ string_of_int(sss.bi))
     Js.log("sss.len = " ++ string_of_int(sss.len));
 
-    <div>
+    <div style=Style.display_div>
         <div>
         (
             <Display cb=displayCallback buf=(
@@ -170,42 +170,45 @@ let make = () => {
             </>
         </div>
 
-        <div style=( ReactDOMRe.Style.make(~float="left", ~width="50%", ()))>
-        (
-            <div>
-            {
-                List.map( 
-                    ss_i => {
-                        <p key=ss_i> {str(Util.fn_sub(ss_i,20,17))} </p>
-                    }, 
-                    sss.sslist1
-                )
-                |> Array.of_list
-                |> React.array;
-            }
-            </div>
-        )
-        </div>
 
-        <div style=( ReactDOMRe.Style.make(~float="left", ~width="50%", ()))>
-        (
-            <div>
-            {
-                List.map( 
-                    ss_i => {
-                        <p key=ss_i> {str(Util.fn_sub(ss_i,20,17))} </p>
-                    }, 
-                    sss.sslist2
-                )
-                |> Array.of_list
-                |> React.array;
-            }
-            </div>
-        )
-        </div>
-
-        <>
+        <div hidden=(!debug)> // debug information
             <button onClick={switchDebug}> {str("DEBUG")} </button>
-        </>
+
+            <div style=( ReactDOMRe.Style.make(~float="left", ~width="50%", ()))>
+            (
+                <div>
+                {
+                    List.map( 
+                        ss_i => {
+                            <p key=ss_i> {str(Util.fn_sub(ss_i,20,17))} </p>
+                        }, 
+                        sss.sslist1
+                    )
+                    |> Array.of_list
+                    |> React.array;
+                }
+                </div>
+            )
+            </div>
+
+            <div style=( ReactDOMRe.Style.make(~float="left", ~width="50%", ()))>
+            (
+                <div>
+                {
+                    List.map( 
+                        ss_i => {
+                            <p key=ss_i> {str(Util.fn_sub(ss_i,20,17))} </p>
+                        }, 
+                        sss.sslist2
+                    )
+                    |> Array.of_list
+                    |> React.array;
+                }
+                </div>
+            )
+            </div>
+        </div>
+
+
     </div>
 }

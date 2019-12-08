@@ -10,7 +10,7 @@ let make = () => {
   let url = ReasonReactRouter.useUrl();
 
   <div>
-    <Nav />
+    //<Nav />
     {switch (url.path) {
     | [""] => {
         //Js.log("router: ' '"); 
