@@ -30,7 +30,7 @@ let make = (~cb, ~buf) => {
                 | Init(buf) => {
                     Js.log("DISPLAY:::Dispatch( Init ) ---> " ++ state_to_str(state));
                     Js.log(buf)
-                    Util.preload_images(Array.of_list(buf)) |> ignore;
+                    //Util.preload_images(Array.of_list(buf)) |> ignore;
                     let new_s = {...state, isInitialized: true, buffer: buf, nextBuffer: ["init"]}
                     //Js.log("DISPLAY:::Dispatch( Init ) -----------> " ++ state_to_str(state));
                     new_s
