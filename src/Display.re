@@ -19,7 +19,7 @@ let state_to_str = (s) => {
     string_of_int(List.length(s.buffer)) ++ string_of_int(List.length(s.nextBuffer)) ;
 };
 
-let preloaded_im = Util.preload_image2("https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer/ss_1574257457.png");
+let preloaded_im = ""; //Util.preload_image2("https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer/ss_1574257457.png");
 
 [@react.component]
 let make = (~cb, ~buf) => {

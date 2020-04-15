@@ -15,3 +15,9 @@ let h_meme_url = {ReactDOMRe.Style.make(
     ~maxWidth="600px", 
     ~maxHeight="350px", 
     () )};     
+
+let image = {ReactDOMRe.Style.make(
+    ~border="1px solid #aaaaaa", 
+    ~maxWidth="80vw", 
+    ~maxHeight="80vh", 
+    () )};  
