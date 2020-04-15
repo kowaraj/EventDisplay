@@ -13,7 +13,7 @@ let make = (~cb) => {
         Some( () => Js.Global.clearInterval( timerId ) );
         });
 
-    <div hidden=false> 
+    <div hidden=true> 
         { R.str("Timer.V1 is " ++ (enabled ? "running " : "stopped ") ++ ", count: " ++ string_of_int(count) )  }
     </div>;
 };

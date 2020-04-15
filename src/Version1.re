@@ -28,14 +28,10 @@ let make = () => {
         Js.log("periodic timer callback");
         let ts = get_ts()
         setImageURL(_ => image_url ++ "/ss_" ++ string_of_int(ts) ++ ".png")
-        Js.log(imageURL);
     };
 
     <div>
-//        <img src={imageURL} style=Style.image/> <br />
-        <img src={image_url ++ "/ss_" ++ string_of_int(ts  + index) ++ ".png"} style=Style.image/> <br />
-
+        <img src={imageURL} style=Style.image/> <br />
         <TimerV1 cb=timerCallback/>
-
     </div>
 }
