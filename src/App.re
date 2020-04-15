@@ -5,16 +5,12 @@ let make = () => {
   <div>
     //<Nav />
     {
-      // Js.log(url.path);
       switch (url.path) {
     | ["v0"] => {        
-        // <p> {R.str("v0 route")} </p>
-        <Version0 /> // copy of Third.re
+        <Version0 /> 
       } 
     | ["v1"] => {
-        //<p> {R.str("v1 route")} </p>
         <Version1 />
-        // <AutoReloader />
       }
     | _ => {
         <p> {R.str("default route")} </p>

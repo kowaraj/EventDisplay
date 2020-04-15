@@ -1,4 +1,4 @@
-let image_url = "http://localhost:4000/buffer/";
+let image_url = "http://localhost:4000/buffer";
 
 [@react.component]
 let make = () => { 
@@ -13,15 +13,29 @@ let make = () => {
             // console.log("now_____utc = ", now.toUTCString())
             // console.log("now_sec_utc = ", Date(now.toUTCString()))
             // console.log("now_sec     = ", Date(now))
-            console.log("ts_sec      = ", ts)
-            console.log("ts_sec_utc  = ", ts_sec_utc)
+            
+            //console.log("ts_sec      = ", ts)
+            //console.log("ts_sec_utc  = ", ts_sec_utc)
 
             return ts_sec_utc
         }
-        |}];    
-    let ts = get_ts();
+        |}];   
+         
+    let ts : int = get_ts();
+    let (index, setIndex) = React.useState(() => 0);
+    let (imageURL, setImageURL) = React.useState(() => image_url ++ "/ss_0000000000.png");
+    let timerCallback = () => {
+        Js.log("periodic timer callback");
+        let ts = get_ts()
+        setImageURL(_ => image_url ++ "/ss_" ++ string_of_int(ts) ++ ".png")
+        Js.log(imageURL);
+    };
 
     <div>
-        <img src={image_url ++ "ss_" ++ ts ++ ".png"} style=Style.image/> <br />
+//        <img src={imageURL} style=Style.image/> <br />
+        <img src={image_url ++ "/ss_" ++ string_of_int(ts  + index) ++ ".png"} style=Style.image/> <br />
+
+        <TimerV1 cb=timerCallback/>
+
     </div>
 }
