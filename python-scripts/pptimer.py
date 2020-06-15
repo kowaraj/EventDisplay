@@ -17,11 +17,11 @@ class PrecisionPeriodicTimer():
         t.start()
 
     def __callback(self):
-        self.callback()
         ms = int(round(time.time() * 1000)) % 1000
         dt = (1000 - ms)/1000.
+        self.callback()
         print('dt = ', dt)
-        self.dt = dt
+        self.dt = dt + 0.050 # add 50ms to make sure to end up in the next second
         # if dt < 0.8:
         #     raise ValueError('Timer callback is longer than 0.8 seconds.')
         self.start()

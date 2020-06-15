@@ -28,7 +28,7 @@ def generate_realtime(delta_sec):
         make_image(ts_str_mod, path=sys.argv[1])
         sleep(1)
 
-def generate_single_image(path='./buffer/', delta_sec=5):
+def generate_single_image(path='../buffer/', delta_sec=5):
     ts_str = datetime.datetime.now(datetime.timezone.utc).strftime("%s")
     ts = int(ts_str)
     ts_mod = ts + delta_sec

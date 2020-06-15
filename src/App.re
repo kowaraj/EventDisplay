@@ -5,6 +5,7 @@ let make = () => {
   <div>
     //<Nav />
     {
+      Js.log(url.path)
       switch (url.path) {
     | ["v0"] => {        
         <Version0 /> 
@@ -13,7 +14,7 @@ let make = () => {
         <Version1 />
       }
     | _ => {
-        <p> {R.str("default route")} </p>
+        <Version1 />
       } 
     }}
   </div>;
