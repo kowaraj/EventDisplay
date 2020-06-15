@@ -5,7 +5,7 @@ let make = () => {
   <div>
     //<Nav />
     {
-      Js.log(url.path)
+      //Js.log(url.path)
       switch (url.path) {
     | ["v0"] => {        
         <Version0 /> 
