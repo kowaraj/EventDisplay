@@ -1,5 +1,6 @@
 let image_url_dev = "http://localhost:4000/buffer";
 let image_url_pro = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer/";
+let image_url_s0 = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/ss_0.png";
 let image_url = image_url_pro;
 
 // 1. no offset_min for UTC! 
@@ -18,7 +19,7 @@ let make = () => {
 
     let ts : int = get_ts();
     let (index, setIndex) = React.useState(() => 0);
-    let (imageURL, setImageURL) = React.useState(() => image_url ++ "/ss_0000000000.png");
+    let (imageURL, setImageURL) = React.useState(() => image_url_s0);
     let timerCallback = () => {
         //Js.log("periodic timer callback");
         let ts = get_ts()
