@@ -1,7 +1,9 @@
 let image_url_dev = "http://localhost:4000/buffer";
-let image_url_pro = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer/";
+let image_url_pro_amstest = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/buffer/";
+let image_url_pro_wwwams = "https://cern.ch/amsservices/buffer/";
 let image_url_s0 = "https://test-apashnin-ams.web.cern.ch/test-apashnin-ams/ss_0.png";
-let image_url = image_url_pro;
+
+let image_url = image_url_pro_wwwams;
 
 // 1. no offset_min for UTC! 
 [@react.component]
